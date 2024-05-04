@@ -66,7 +66,7 @@ public class Initializr implements ApplicationRunner {
             List<Permission> permissionList = permissionRepository.findAll();
             List<Permission> adminPermissionList = new ArrayList<>();
             for (Permission permission : permissionList) {
-                if (!Objects.equals(permission.getGroup(), "PRIME_MINISTERS"))
+                if (!Objects.equals(permission.getGroup(), "VOTE_CHAIRPERSON"))
                     adminPermissionList.add(permission);
             }
             Set<Permission> permissionSet = new HashSet<>(adminPermissionList);
@@ -88,12 +88,13 @@ public class Initializr implements ApplicationRunner {
         roleSet.add(role);
 
         UserAccount userAccount;
-        Optional<UserAccount> accountOptional = userAccountRepository.findFirstByUsername("admin@ega.go.tz");
+        Optional<UserAccount> accountOptional = userAccountRepository.findFirstByUsername("19011028");
         if (accountOptional.isEmpty()) {
             userAccount = new UserAccount();
-            userAccount.setUsername("admin@ega.go.tz");
-            userAccount.setPhone("255766040293");
+            userAccount.setUsername("19011028");
+            userAccount.setPhone("255745057633");
             userAccount.setFirstName("Super");
+            userAccount.setEmail("rojasyngaiza01@gmail.com");
             userAccount.setLastName("Admin");
             userAccount.setPassword(passwordEncoder.encode("12345678"));
             Set<Role> roles = new HashSet<>();
@@ -132,12 +133,12 @@ public class Initializr implements ApplicationRunner {
     }
 
     private void createPrimeMinisterRole() {
-        logger.info("========================CREATING PRIME MINISTER ROLE========================================");
-        Optional<Role> roleOptional = roleRepository.findFirstByName("PRIME_MINISTERS");
+        logger.info("========================CREATING VOTE CHAIRPERSON ROLE========================================");
+        Optional<Role> roleOptional = roleRepository.findFirstByName("VOTE_CHAIRPERSON");
         Role role = new Role();
         if (roleOptional.isEmpty()) {
-            role.setName("PRIME_MINISTERS");
-            role.setDisplayName("PRIME MINISTERS");
+            role.setName("VOTE_CHAIRPERSON");
+            role.setDisplayName("VOTE CHAIRPERSON");
 
             List<Permission> permissionList = permissionRepository.findAll();
             Set<Permission> permissionSet = new HashSet<>(permissionList);
@@ -149,7 +150,7 @@ public class Initializr implements ApplicationRunner {
             role.setPermissions(permissionSet);
         }
         roleRepository.save(role);
-        logger.info("=====================FINISHED CREATING PRIME MINISTER ROLE==================================");
+        logger.info("=====================FINISHED CREATING VOTE CHAIRPERSON ROLE==================================");
     }
 
 

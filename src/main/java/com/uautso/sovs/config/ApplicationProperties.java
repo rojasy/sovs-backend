@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "tz.go.pmo")
+@ConfigurationProperties(prefix = "com.uautso.sovs")
 public class ApplicationProperties {
 
     private String jwtKey;

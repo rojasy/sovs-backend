@@ -2,7 +2,6 @@ package com.uautso.sovs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.leangen.graphql.annotations.GraphQLIgnore;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +10,9 @@ import org.hibernate.annotations.ResultCheckStyle;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,9 +40,13 @@ public class UserAccount extends BaseEntity implements Serializable {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Email
-    @Column(name = "email", unique = true)
+
+    @Column(name = "username", unique = true)
     private String username;
+
+    @Email
+    @Column(name = "Email", unique = true)
+    private String email;
 
     @Pattern(regexp = "(^(([2]{1}[5]{2})|([0]{1}))[1-9]{2}[0-9]{7}$)", message = "Please enter valid phone number eg. 255766040293")
     @Column(name = "phone_number", unique = true)

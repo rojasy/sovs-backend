@@ -11,6 +11,7 @@ public class UserInfo {
 
     private Long id;
     private String email;
+    private String username;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;

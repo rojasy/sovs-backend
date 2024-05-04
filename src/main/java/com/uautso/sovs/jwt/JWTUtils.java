@@ -17,7 +17,7 @@ import java.util.Date;
 @Component
 public class JWTUtils {
 
-    @Value("${tz.go.pmo.jwtkey}")
+    @Value("${com.uautso.sovs.jwtkey}")
     private String key;
 
     Logger logger = LoggerFactory.getLogger(JWTUtils.class);

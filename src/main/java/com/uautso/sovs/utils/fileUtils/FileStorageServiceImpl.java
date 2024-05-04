@@ -1,6 +1,7 @@
 package com.uautso.sovs.utils.fileUtils;
 
-import com.ngaiza.test.utils.userextractor.LoggedUser;
+
+import com.uautso.sovs.utils.userextractor.LoggedUser;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

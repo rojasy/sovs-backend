@@ -1,13 +1,14 @@
 package com.uautso.sovs.utils.paginationutil;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.List;
 
 /**

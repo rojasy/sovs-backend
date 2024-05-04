@@ -61,8 +61,11 @@ public class UserAccountServiceImpl implements UserAccountService {
                 }
             }
 
-            if (!UserInformationValidation.isEmailValid(accountDto.getUsername()))
+            if (!UserInformationValidation.isEmailValid(accountDto.getEmail()))
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Please enter a valid email");
+
+            if (!UserInformationValidation.isEmailValid(accountDto.getUsername()))
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Please enter a valid username");
 
             if (accountDto.getPhoneNumber() == null || !UserInformationValidation.isPhoneNumberValid(accountDto.getPhoneNumber()) || accountDto.getPhoneNumber().length() != 12)
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Please enter a valid phone number");
@@ -71,9 +74,13 @@ public class UserAccountServiceImpl implements UserAccountService {
             if ((isFirstTime && optionalByPhone.isPresent()) || (!isFirstTime && !Objects.equals(userAccount.getPhone(), accountDto.getPhoneNumber()) && optionalByPhone.isPresent()))
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Phone number already taken");
 
+            Optional<UserAccount> optionalByEmail = accountRepository.findFirstByUsername(accountDto.getEmail());
+            if ((isFirstTime && optionalByEmail.isPresent()) || (!isFirstTime && !Objects.equals(userAccount.getEmail(), accountDto.getEmail()) && optionalByEmail.isPresent()))
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "This email already taken");
+
             Optional<UserAccount> optionalByUsername = accountRepository.findFirstByUsername(accountDto.getUsername());
             if ((isFirstTime && optionalByUsername.isPresent()) || (!isFirstTime && !Objects.equals(userAccount.getUsername(), accountDto.getUsername()) && optionalByUsername.isPresent()))
-                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "This email already taken");
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "This Username already taken");
 
             if (isFirstTime && accountDto.getUsername() == null)
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Username Cannot be Empty");
@@ -95,6 +102,9 @@ public class UserAccountServiceImpl implements UserAccountService {
 
             if (accountDto.getUsername() != null && !Objects.equals(accountDto.getUsername(), userAccount.getUsername()))
                 userAccount.setUsername(accountDto.getUsername());
+
+            if (accountDto.getEmail() != null && !Objects.equals(accountDto.getEmail(), userAccount.getEmail()))
+                userAccount.setEmail(accountDto.getEmail());
 
             if (isFirstTime && userAccount.getPassword() == null) {
                 userAccount.setPassword(passwordEncoder.encode(accountDto.getLastName().toUpperCase()));

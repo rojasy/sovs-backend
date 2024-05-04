@@ -2,6 +2,7 @@ package com.uautso.sovs.utils;
 
 
 
+
 import com.uautso.sovs.model.Permission;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class Permissions {
 
-    public static <Permission> List<Permission> permissionsList() {
+    public static List<Permission> permissionsList() {
 
         List<Permission> permissions = new ArrayList<>();
 
