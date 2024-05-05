@@ -62,6 +62,9 @@ public class UserAccount extends BaseEntity implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "userAccount",cascade = CascadeType.ALL)
+    private List<Votes> votes;
+
 
 
     @JsonIgnore

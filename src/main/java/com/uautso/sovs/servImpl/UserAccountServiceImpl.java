@@ -64,9 +64,6 @@ public class UserAccountServiceImpl implements UserAccountService {
             if (!UserInformationValidation.isEmailValid(accountDto.getEmail()))
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Please enter a valid email");
 
-            if (!UserInformationValidation.isEmailValid(accountDto.getUsername()))
-                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Please enter a valid username");
-
             if (accountDto.getPhoneNumber() == null || !UserInformationValidation.isPhoneNumberValid(accountDto.getPhoneNumber()) || accountDto.getPhoneNumber().length() != 12)
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Please enter a valid phone number");
 
