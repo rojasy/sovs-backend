@@ -1,6 +1,6 @@
 package com.uautso.sovs.dto;
 
-public class CategoryDto {
+public class ElectionDto {
 
     private String name;
     private String description;

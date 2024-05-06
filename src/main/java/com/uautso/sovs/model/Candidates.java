@@ -21,8 +21,8 @@ public class Candidates extends BaseEntity implements Serializable {
     private String title;
     private String description;
     @ManyToOne
-    @JoinColumn(name = "category_id",nullable = false)
-    private Category category;
+    @JoinColumn(name = "election_id",nullable = false)
+    private Election election;
 
     @OneToMany(mappedBy = "candidates",cascade = CascadeType.ALL)
     private List<Votes> votes;
