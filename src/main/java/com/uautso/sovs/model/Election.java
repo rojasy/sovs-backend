@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "election")
+@SQLDelete(sql = "UPDATE election SET deleted = true WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted = false")
 public class Election extends BaseEntity implements Serializable {
 
     private String name;
@@ -28,6 +31,7 @@ public class Election extends BaseEntity implements Serializable {
     @Column(name = "year")
     private Integer year;
 
+//    @Enumerated(EnumType.STRING)
     @Column(name = "election_category")
     private ElectionCategory category;
 

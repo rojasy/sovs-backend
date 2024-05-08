@@ -4,8 +4,8 @@ import com.uautso.sovs.dto.ElectionDto;
 import com.uautso.sovs.model.Election;
 import com.uautso.sovs.utils.Response;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
 
 public interface ElectionService {
 

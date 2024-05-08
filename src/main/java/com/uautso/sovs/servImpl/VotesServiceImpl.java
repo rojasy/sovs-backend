@@ -5,6 +5,8 @@ import com.uautso.sovs.model.Candidates;
 import com.uautso.sovs.model.Election;
 import com.uautso.sovs.model.UserAccount;
 import com.uautso.sovs.model.Votes;
+import com.uautso.sovs.repository.CandidatesRepository;
+import com.uautso.sovs.repository.ElectionRepository;
 import com.uautso.sovs.repository.UserAccountRepository;
 import com.uautso.sovs.repository.VotesRepository;
 import com.uautso.sovs.service.VotesService;
@@ -32,14 +34,20 @@ public class VotesServiceImpl implements VotesService {
 
     private final VotesRepository votesRepository;
 
+    private final CandidatesRepository candidatesRepository;
+
+    private final ElectionRepository electionRepository;
+
     private final LoggedUser loggedUser;
 
     private final Logger logger = LoggerFactory.getLogger(VotesServiceImpl.class);
 
     @Autowired
-    public VotesServiceImpl(UserAccountRepository accountRepository, VotesRepository votesRepository, LoggedUser loggedUser) {
+    public VotesServiceImpl(UserAccountRepository accountRepository, VotesRepository votesRepository, CandidatesRepository candidatesRepository, ElectionRepository electionRepository, LoggedUser loggedUser) {
         this.accountRepository = accountRepository;
         this.votesRepository = votesRepository;
+        this.candidatesRepository = candidatesRepository;
+        this.electionRepository = electionRepository;
         this.loggedUser = loggedUser;
     }
 
@@ -56,7 +64,7 @@ public class VotesServiceImpl implements VotesService {
 
         }catch (Exception e) {
             log.error("FAILED TO GET ALL VOTES");
-        };
+        }
         return new PageImpl<>(new ArrayList<>(), pageable, 0);
     }
 
@@ -65,6 +73,8 @@ public class VotesServiceImpl implements VotesService {
         try {
 
             UserAccount user = loggedUser.getUser();
+
+            System.out.println("logged User id "+user.getUuid());
 
             if(user == null){
                 logger.info("UNAUTHENTICATED USER TRYING TO CREATE VOTES, REJECTED");
@@ -94,24 +104,40 @@ public class VotesServiceImpl implements VotesService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Election Year Cannot be Empty");
             }
 
-            if(!votesDto.getCandidateUuid().isBlank()){
-                votes.setCandidateUuid(votesDto.getCandidateUuid());
-            }
+//            if(!votesDto.getCandidateUuid().isBlank()){
+//                votes.setCandidateUuid(votesDto.getCandidateUuid());
+//            }
 
             if(!votesDto.getElectionYear().toString().isBlank()){
                 votes.setYear(votesDto.getElectionYear());
             }
 
-            Votes votes1 = new Votes();
             Candidates candidates = new Candidates();
+
+            Optional<Candidates> candidatesOptional = candidatesRepository.findFirstByUuid(candidates.getUuid());
+
+            if(candidatesOptional.isPresent()){
+                candidates = candidatesOptional.get();
+            }
+
             Election election = new Election();
-            UserAccount userAccount1 = new UserAccount();
 
-            votes1.setCandidates(candidates);
-            votes1.setUserAccount(userAccount1);
-            votes1.setElection(election);
+            Optional<Election> electionOptional = electionRepository.findFirstByUuid(election.getUuid());
 
-            Votes savedVotes = votesRepository.save(votes1);
+            if(electionOptional.isPresent()){
+                election = electionOptional.get();
+            }
+
+//            Votes votes1 = new Votes();
+
+
+//            UserAccount userAccount1 = new UserAccount();
+
+            votes.setCandidates(candidates);
+            votes.setUserAccount(userAccount);
+            votes.setElection(election);
+
+            Votes savedVotes = votesRepository.save(votes);
 
             return new Response<>(false, ResponseCode.SUCCESS, savedVotes, "Vote Added successful");
 

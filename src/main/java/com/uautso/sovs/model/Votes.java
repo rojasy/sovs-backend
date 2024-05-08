@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "votes")
+@SQLDelete(sql = "UPDATE votes SET deleted = true WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted = false")
 public class Votes extends BaseEntity implements Serializable {
 
     private LocalDateTime time = LocalDateTime.now();
@@ -28,6 +33,4 @@ public class Votes extends BaseEntity implements Serializable {
     @ManyToOne
     private Election election;
 
-    @Column(name = "candidate_uuid")
-    private String candidateUuid;
 }
