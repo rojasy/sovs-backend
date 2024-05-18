@@ -74,26 +74,36 @@ public class VotesServiceImpl implements VotesService {
 
             UserAccount user = loggedUser.getUser();
 
-            System.out.println("logged User id "+user.getUuid());
+//            System.out.println("logged User id "+user.getUuid());
 
             if(user == null){
                 logger.info("UNAUTHENTICATED USER TRYING TO CREATE VOTES, REJECTED");
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthenticated!");
+
             }
 
             UserAccount userAccount = new UserAccount();
 
             if(user.getUuid() != null){
                 Optional<UserAccount> userAccountOptional = accountRepository.findFirstByUuid(user.getUuid());
-                if(userAccountOptional.isPresent()){
-                    userAccount = userAccountOptional.get();
+                if(userAccountOptional.isEmpty()){
+//                    userAccount = userAccountOptional.get();
+                    return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "No user found with specified uuid");
+
                 }
+                userAccount = userAccountOptional.get();
+
             }
+
+
 
             Votes votes = new Votes();
             Optional<Votes> optionalVotes = votesRepository.findFirstByCandidatesUuid(votesDto.getCandidateUuid());
 
             if(optionalVotes.isPresent()){
-                votes = optionalVotes.get();
+//                votes = optionalVotes.get();
+                return new Response<>(true, ResponseCode.FAIL, "User already exist with specified uuid");
+
             }
 
             if(votesDto.getCandidateUuid() == null){
@@ -114,19 +124,24 @@ public class VotesServiceImpl implements VotesService {
 
             Candidates candidates = new Candidates();
 
-            Optional<Candidates> candidatesOptional = candidatesRepository.findFirstByUuid(candidates.getUuid());
+            Optional<Candidates> candidatesOptional = candidatesRepository.findFirstByUuid(votesDto.getCandidateUuid());
 
-            if(candidatesOptional.isPresent()){
-                candidates = candidatesOptional.get();
+            if(candidatesOptional.isEmpty()){
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "No Candidate found with specified uuid");
             }
+
+            candidates = candidatesOptional.get();
 
             Election election = new Election();
 
-            Optional<Election> electionOptional = electionRepository.findFirstByUuid(election.getUuid());
+            Optional<Election> electionOptional = electionRepository.findFirstByUuid(votesDto.getElectionUuid());
 
-            if(electionOptional.isPresent()){
-                election = electionOptional.get();
+            if(electionOptional.isEmpty()){
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "No Election found with specified uuid");
+
             }
+
+            election = electionOptional.get();
 
 //            Votes votes1 = new Votes();
 

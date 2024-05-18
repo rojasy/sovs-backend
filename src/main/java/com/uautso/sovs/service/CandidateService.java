@@ -3,6 +3,7 @@ package com.uautso.sovs.service;
 import com.uautso.sovs.dto.CandidateDto;
 import com.uautso.sovs.model.Candidates;
 import com.uautso.sovs.utils.Response;
+import com.uautso.sovs.utils.enums.ElectionCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,4 +20,7 @@ public interface CandidateService {
 
     Response<Candidates> getCandidateByUuid(String uuid);
 
+    Page<Candidates> getCandidateByElectionCategory(ElectionCategory category,Pageable pageable);
+
+//    Response<Candidates> getCandidateByElectionUuid(String electionUuid);
 }

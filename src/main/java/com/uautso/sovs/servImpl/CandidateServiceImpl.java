@@ -11,13 +11,16 @@ import com.uautso.sovs.repository.VotesRepository;
 import com.uautso.sovs.service.CandidateService;
 import com.uautso.sovs.utils.Response;
 import com.uautso.sovs.utils.ResponseCode;
+import com.uautso.sovs.utils.enums.ElectionCategory;
 import com.uautso.sovs.utils.userextractor.LoggedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static io.leangen.graphql.util.ClassFinder.log;
@@ -136,4 +139,42 @@ public class CandidateServiceImpl implements CandidateService {
     public Response<Candidates> getCandidateByUuid(String uuid) {
         return null;
     }
+
+    @Override
+    public Page<Candidates> getCandidateByElectionCategory(ElectionCategory category,Pageable pageable) {
+        try {
+
+            UserAccount user = loggedUser.getUser();
+
+            if(user == null){
+                logger.info("UNAUTHENTICATED USER TRYING TO GET CANDIDATE BY CATEGORY, REJECTED");
+                return new PageImpl<>(new ArrayList<>(), pageable, 0);
+            }
+
+//            UserAccount userAccount;
+//            Candidates candidates;
+//            Optional<Candidates> optionalCandidates = candidatesRepository.findCandidatesByElectionCategory(category);
+//
+//            if(optionalCandidates.isEmpty()){
+//                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "No Candidate found with specified category");
+//            }
+//
+//            candidates = optionalCandidates.get();
+
+            Page<Candidates> allCandidatesByCategory = candidatesRepository.findCandidatesByElectionCategory(category,pageable);
+
+            return allCandidatesByCategory;
+
+
+
+        }catch (Exception e){
+            log.error("FAILED TO GET CANDIDATE WITH CATEGORY");
+            e.printStackTrace();
+            return new PageImpl<>(new ArrayList<>(), pageable, 0);
+
+        }
+//        return null;
+    }
+
+
 }

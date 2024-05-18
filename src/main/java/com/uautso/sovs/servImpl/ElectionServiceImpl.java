@@ -1,6 +1,7 @@
 package com.uautso.sovs.servImpl;
 
 import com.uautso.sovs.dto.ElectionDto;
+import com.uautso.sovs.model.Candidates;
 import com.uautso.sovs.model.Election;
 import com.uautso.sovs.model.UserAccount;
 import com.uautso.sovs.model.Votes;
@@ -11,6 +12,7 @@ import com.uautso.sovs.repository.VotesRepository;
 import com.uautso.sovs.service.ElectionService;
 import com.uautso.sovs.utils.Response;
 import com.uautso.sovs.utils.ResponseCode;
+import com.uautso.sovs.utils.enums.ElectionCategory;
 import com.uautso.sovs.utils.userextractor.LoggedUser;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static io.leangen.graphql.util.ClassFinder.log;
 
 @Service
 @Slf4j
@@ -130,6 +134,34 @@ public class ElectionServiceImpl implements ElectionService {
 
     @Override
     public Response<Election> getElectionByUuid(String uuid) {
+        return null;
+    }
+
+    @Override
+    public Response<Election> getElectionByCategory(ElectionCategory category) {
+        try {
+
+            UserAccount user = loggedUser.getUser();
+
+            if(user == null){
+                logger.info("UNAUTHENTICATED USER TRYING TO CREATE CANDIDATE, REJECTED");
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthenticated!");
+            }
+
+//            Candidates candidates = new Candidates();
+            Election election = new Election();
+
+            Optional<Election> optionalElection = electionRepository.findFirstByCategory(category);
+
+            if(optionalElection.isEmpty()){
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "No Election found with specified category");
+            }
+
+            election = optionalElection.get();
+
+        }catch (Exception e){
+            log.error("FAILED TO GET CANDIDATE BY ELECTION");
+        }
         return null;
     }
 }
