@@ -3,16 +3,21 @@ package com.uautso.sovs.controllers;
 
 
 import com.uautso.sovs.dto.UserAccountDto;
+import com.uautso.sovs.model.Candidates;
 import com.uautso.sovs.model.UserAccount;
 import com.uautso.sovs.service.AuthService;
 import com.uautso.sovs.service.UserAccountService;
 import com.uautso.sovs.utils.Response;
+import com.uautso.sovs.utils.enums.ElectionCategory;
 import com.uautso.sovs.utils.paginationutil.PageableConfig;
+import com.uautso.sovs.utils.paginationutil.PageableParam;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +66,12 @@ public class UserAccountController {
     @GraphQLMutation(name = "deactivateUser")
     public Response<UserAccount> deactivateUser(@GraphQLArgument(name = "uuid")String uid){
         return accountService.deactivateUser(uid);
+    }
+
+    @GraphQLQuery(name = "getAllUsers")
+    public Page<UserAccount> getAllUsers(@GraphQLArgument(name = "pageParam") PageableParam param){
+        PageRequest pageable = pageableConfig.pageable(param);
+        return  accountService.getAllUsers(pageable);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_UPDATE_USER')")

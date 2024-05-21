@@ -48,7 +48,17 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public Page<Candidates> getAllCandidates(Pageable pageable) {
-        return null;
+        try {
+            UserAccount user = loggedUser.getUser();
+            if (user == null) {
+                logger.info("UNAUTHENTICATED USER TRYING TO FETCH CANDIDATES, REJECTED");
+                return new PageImpl<>(new ArrayList<>(), pageable, 0);
+            }
+            return candidatesRepository.findAll(pageable);
+        } catch (Exception e) {
+            log.error("FAILED TO GET ALL CANDIDATES: ", e);
+        }
+        return new PageImpl<>(new ArrayList<>(), pageable, 0);
     }
 
     @Override

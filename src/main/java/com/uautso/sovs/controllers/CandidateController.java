@@ -39,4 +39,10 @@ public class CandidateController {
         return  candidateService.getCandidateByElectionCategory(category,pageable);
     }
 
+    @GraphQLQuery(name = "getAllCandidates")
+    public Page<Candidates> getAllCandidates(@GraphQLArgument(name = "pageParam")PageableParam param){
+        PageRequest pageable = pageableConfig.pageable(param);
+        return  candidateService.getAllCandidates(pageable);
+    }
+
 }
