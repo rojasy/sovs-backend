@@ -25,6 +25,7 @@ public class Candidates extends BaseEntity implements Serializable {
 
     private String title;
     private String description;
+    private Long totalVotes = 0L;
     @ManyToOne
     @JoinColumn(name = "election_id",nullable = false)
     private Election election;

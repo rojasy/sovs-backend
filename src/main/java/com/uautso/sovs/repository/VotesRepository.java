@@ -11,4 +11,8 @@ public interface VotesRepository extends JpaRepository<Votes,Long> {
 
     Optional<Votes> findFirstByCandidatesUuid(String uuid);
 
+    Optional<Votes> findByUserAccountUuidAndCandidatesUuidAndElectionUuid(String uuid,String candidateUuid,String electionUuid);
+
+    long countByCandidatesUuidAndElectionUuid(String candidatesUuid, String electionUuid);
+
 }

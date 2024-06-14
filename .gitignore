@@ -29,5 +29,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+application.properties
+Initializr.java
+
 ### VS Code ###
 .vscode/
