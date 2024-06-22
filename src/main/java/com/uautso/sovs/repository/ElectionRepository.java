@@ -14,4 +14,8 @@ public interface ElectionRepository extends JpaRepository<Election,Long> {
 
     Optional<Election> findFirstByCategory(ElectionCategory category);
 
+    Long countAllByDeletedFalse();
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.uautso.sovs.servImpl;
 
+import com.uautso.sovs.dto.DashboardResponse;
 import com.uautso.sovs.dto.TotalVotesDto;
 import com.uautso.sovs.dto.VotesDto;
 import com.uautso.sovs.model.Candidates;
@@ -246,7 +247,7 @@ public class VotesServiceImpl implements VotesService {
             }
             Candidates candidate = candidatesOptional.get();
 
-            long totalVotes = votesRepository.countByCandidatesUuidAndElectionUuid(totalVotesDto.getCandidateUuid(), totalVotesDto.getElectionUuid());
+            Long totalVotes = votesRepository.countByCandidatesUuidAndElectionUuid(totalVotesDto.getCandidateUuid(), totalVotesDto.getElectionUuid());
 
             candidate.setTotalVotes(totalVotes);
 
@@ -256,6 +257,41 @@ public class VotesServiceImpl implements VotesService {
         } catch (Exception e) {
             logger.error("FAILED TO COUNT VOTES", e);
             return new Response<>(true, ResponseCode.FAIL, "Failed to count votes");
+        }
+    }
+
+    @Override
+    public Response<DashboardResponse> getDashboard() {
+        try {
+
+            UserAccount user = loggedUser.getUser();
+
+            if (user == null) {
+                logger.info("UNAUTHENTICATED USER TRYING TO GET DASHBOARD, REJECTED");
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthenticated!");
+            }
+
+
+            Long users = accountRepository.countAllByDeletedFalse();
+            Long votes = votesRepository.countVotesByDeletedFalse();
+            Long candidates = candidatesRepository.countAllByDeletedFalse();
+            Long elections = electionRepository.countAllByDeletedFalse();
+
+            DashboardResponse dashboardResponse = new DashboardResponse();
+
+            dashboardResponse.setUsers(users);
+            dashboardResponse.setVotes(votes);
+            dashboardResponse.setCandidates(candidates);
+            dashboardResponse.setElections(elections);
+
+
+            return new Response<>(false, ResponseCode.SUCCESS, dashboardResponse, "Dashboard data retrieved successfully");
+
+
+        }catch (Exception e){
+            logger.error("FAILED TO GET DASHBOARD");
+            return new Response<>(true, ResponseCode.FAIL, "Failed to count votes");
+
         }
     }
 

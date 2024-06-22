@@ -13,6 +13,14 @@ public interface VotesRepository extends JpaRepository<Votes,Long> {
 
     Optional<Votes> findByUserAccountUuidAndCandidatesUuidAndElectionUuid(String uuid,String candidateUuid,String electionUuid);
 
-    long countByCandidatesUuidAndElectionUuid(String candidatesUuid, String electionUuid);
+    Long countByCandidatesUuidAndElectionUuid(String candidatesUuid, String electionUuid);
+
+    Long countVotesByDeletedFalse();
+
+    Long countVotesByCandidatesUuid(String candidatesUuid);
+
+    Long countVotesByElectionUuid(String electionUuid);
+
+
 
 }

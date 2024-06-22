@@ -18,4 +18,7 @@ public interface CandidatesRepository extends JpaRepository<Candidates,Long> {
 
     Page<Candidates> findCandidatesByElectionCategory(ElectionCategory category, Pageable pageable);
 
+    Long countAllByDeletedFalse();
+
+
 }

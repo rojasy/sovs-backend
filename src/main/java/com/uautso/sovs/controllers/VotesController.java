@@ -1,5 +1,6 @@
 package com.uautso.sovs.controllers;
 
+import com.uautso.sovs.dto.DashboardResponse;
 import com.uautso.sovs.dto.TotalVotesDto;
 import com.uautso.sovs.dto.VotesDto;
 import com.uautso.sovs.model.Candidates;
@@ -36,6 +37,11 @@ public class VotesController {
     @GraphQLQuery(name = "getCandidateVotes")
     public Response<Candidates> getCandidateVotes(@GraphQLArgument(name = "totalVotes") TotalVotesDto totalVotesDto){
         return  votesService.getTotalVotes(totalVotesDto);
+    }
+
+    @GraphQLQuery(name = "getDashboard")
+    public Response<DashboardResponse> getDashboard(){
+        return  votesService.getDashboard();
     }
 
 }

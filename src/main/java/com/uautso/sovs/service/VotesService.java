@@ -1,5 +1,6 @@
 package com.uautso.sovs.service;
 
+import com.uautso.sovs.dto.DashboardResponse;
 import com.uautso.sovs.dto.TotalVotesDto;
 import com.uautso.sovs.dto.VotesDto;
 import com.uautso.sovs.model.Candidates;
@@ -15,4 +16,6 @@ public interface VotesService {
     Response<Votes> addVote(VotesDto votesDto);
 
      Response<Candidates> getTotalVotes(TotalVotesDto totalVotesDto);
+
+     Response<DashboardResponse> getDashboard();
 }
