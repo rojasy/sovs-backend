@@ -1,7 +1,10 @@
 package com.uautso.sovs.controllers;
 
 import com.uautso.sovs.dto.ElectionDto;
+import com.uautso.sovs.dto.UserAccountDto;
+import com.uautso.sovs.model.Candidates;
 import com.uautso.sovs.model.Election;
+import com.uautso.sovs.model.UserAccount;
 import com.uautso.sovs.service.ElectionService;
 import com.uautso.sovs.utils.Response;
 import com.uautso.sovs.utils.paginationutil.PageableConfig;
@@ -35,6 +38,16 @@ public class ElectionController {
     public Page<Election> getAllElection(@GraphQLArgument(name = "pageParam")PageableParam param){
         PageRequest pageable = pageableConfig.pageable(param);
         return electionService.getAllElection(pageable);
+    }
+
+    @GraphQLMutation(name = "deleteElection")
+    public Response<Election> deleteElection(@GraphQLArgument(name = "uuid")String uuid){
+        return electionService.deleteElectionByUuid(uuid);
+    }
+
+    @GraphQLMutation(name = "updateElection")
+    public Response<Election> updateElection(@GraphQLArgument(name = "election") ElectionDto electionDto) {
+        return electionService.updateElectionByUuid(electionDto);
     }
 
 }

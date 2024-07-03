@@ -18,4 +18,8 @@ public interface VotesService {
      Response<Candidates> getTotalVotes(TotalVotesDto totalVotesDto);
 
      Response<DashboardResponse> getDashboard();
+
+//     Response<Votes> deleteVote(VotesDto votesDto);
+
+//     Response<Votes> deleteVoteById(Votes votes);
 }

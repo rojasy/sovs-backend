@@ -1,6 +1,7 @@
 package com.uautso.sovs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.uautso.sovs.utils.enums.Courses;
 import io.leangen.graphql.annotations.GraphQLIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +53,9 @@ public class UserAccount extends BaseEntity implements Serializable {
     private String phone;
 
     private String password;
+
+    @Column(name = "Course", unique = true)
+    private Courses courses;
 
 
 

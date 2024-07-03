@@ -18,6 +18,10 @@ public interface ElectionService {
 
     Response<Election> getElectionByCategory(ElectionCategory category);
 
+    Response<Election> deleteElectionByUuid(String uuid);
+
+    Response<Election> updateElectionByUuid(ElectionDto electionDto);
+
     
 
 }

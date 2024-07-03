@@ -23,4 +23,11 @@ public interface CandidateService {
     Page<Candidates> getCandidateByElectionCategory(ElectionCategory category,Pageable pageable);
 
 //    Response<Candidates> getCandidateByElectionUuid(String electionUuid);
+
+//    Response<Candidates> deleteCandidateByElectionCategory(ElectionCategory category);
+
+    Response<Candidates> deleteCandidateByUuid(String uuid);
+
+    Response<Candidates> updateCandidateByUuid(CandidateDto candidateDto);
+
 }

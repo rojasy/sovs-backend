@@ -164,4 +164,64 @@ public class ElectionServiceImpl implements ElectionService {
         }
         return null;
     }
+
+    @Override
+    public Response<Election> deleteElectionByUuid(String uuid) {
+
+        try {
+            UserAccount user = loggedUser.getUser();
+            if (user == null) {
+                logger.info("UNAUTHENTICATED USER TRYING TO DELETE ELECTION, REJECTED");
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthenticated!");
+            }
+
+            Optional<Election> electionOptional = electionRepository.findFirstByUuid(uuid);
+            if (electionOptional.isEmpty())
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "Election NOt Found");
+
+            Election election = electionOptional.get();
+            election.setDeleted(true);
+            Election updatedElection = electionRepository.save(election);
+
+            return new Response<>(false, ResponseCode.SUCCESS, updatedElection, "Election deleted successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Response<>(true, ResponseCode.FAIL, "Failed to deleted election, Unknown error occurred");
+
+    }
+
+    @Override
+    public Response<Election> updateElectionByUuid(ElectionDto electionDto) {
+
+        try {
+            UserAccount user = loggedUser.getUser();
+            if (user == null) {
+                logger.info("UNAUTHENTICATED USER TRYING TO UPDATE ELECTION, REJECTED");
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthenticated!");
+            }
+
+            Optional<Election> electionOptional = electionRepository.findFirstByUuid(electionDto.getUuid());
+            if (electionOptional.isEmpty())
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "Election NOt Found");
+
+            Election election = electionOptional.get();
+
+            election.setName(electionDto.getName());
+            election.setDescription(electionDto.getDescription());
+            election.setYear(electionDto.getYear());
+            election.setCategory(electionDto.getCategory());
+
+            Election updatedElection = electionRepository.save(election);
+
+            return new Response<>(false, ResponseCode.SUCCESS, updatedElection, "Election updated successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Response<>(true, ResponseCode.FAIL, "Failed to update election, Unknown error occurred");
+    }
 }

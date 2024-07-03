@@ -186,5 +186,83 @@ public class CandidateServiceImpl implements CandidateService {
 //        return null;
     }
 
+    @Override
+    public Response<Candidates> deleteCandidateByUuid(String uuid) {
+
+        try {
+            UserAccount user = loggedUser.getUser();
+            if (user == null) {
+                logger.info("UNAUTHENTICATED USER TRYING TO DELETE CANDIDATE, REJECTED");
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthenticated!");
+            }
+
+            Optional<Candidates> candidatesOptional = candidatesRepository.findFirstByUuid(uuid);
+            if (candidatesOptional.isEmpty())
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "Candidate NOt Found");
+
+            Candidates candidates = candidatesOptional.get();
+            candidates.setDeleted(true);
+            Candidates updatedCandidate = candidatesRepository.save(candidates);
+
+            return new Response<>(false, ResponseCode.SUCCESS, updatedCandidate, "Candidate deleted successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Response<>(true, ResponseCode.FAIL, "Failed to deleted candidate, Unknown error occurred");
+    }
+
+    @Override
+    public Response<Candidates> updateCandidateByUuid(CandidateDto candidateDto) {
+
+        try {
+            UserAccount user = loggedUser.getUser();
+            if (user == null) {
+                logger.info("UNAUTHENTICATED USER TRYING TO UPDATE CANDIDATE, REJECTED");
+                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthenticated!");
+            }
+
+            logger.info(user.getUsername());
+
+            Optional<Candidates> candidatesOptional = candidatesRepository.findFirstByUuid(candidateDto.getUuid());
+            if (candidatesOptional.isEmpty())
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "Candidate NOt Found");
+
+            Optional<UserAccount> userAccountOptional = accountRepository.findFirstByUuid(candidateDto.getUserUuid());
+            if (userAccountOptional.isEmpty())
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "User NOt Found");
+
+            Optional<Election> electionOptional = electionRepository.findFirstByUuid(candidateDto.getElectionUuid());
+            if (electionOptional.isEmpty())
+                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "Election NOt Found");
+
+            Candidates candidates = candidatesOptional.get();
+            UserAccount account = userAccountOptional.get();
+            Election election = electionOptional.get();
+
+            // Logging to track flow and values
+            logger.info("Candidate DTO: {}", candidateDto);
+            logger.info("Retrieved Candidate: {}", candidates);
+            logger.info("Retrieved UserAccount: {}", account);
+            logger.info("Retrieved Election: {}", election);
+
+            candidates.setTitle(candidateDto.getTitle());
+            candidates.setDescription(candidateDto.getDescription());
+            candidates.setUserAccount(account);
+            candidates.setElection(election);
+
+            Candidates updatedCandidate = candidatesRepository.save(candidates);
+
+            return new Response<>(false, ResponseCode.SUCCESS, updatedCandidate, "Candidate updated successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Failed to update candidate: {}", e.getMessage());
+        }
+
+        return new Response<>(true, ResponseCode.FAIL, "Failed to update candidate, Unknown error occurred");
+    }
+
 
 }
