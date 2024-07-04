@@ -1,4 +1,5 @@
 package com.uautso.sovs.dto;
+import com.uautso.sovs.utils.enums.Courses;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +17,6 @@ public class UserAccountDto {
     private String lastName;
     private String email;
     private String phoneNumber;
+    private Courses courses;
 
 }

@@ -190,9 +190,6 @@ public class VotesServiceImpl implements VotesService {
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Candidate UUid Cannot be Empty");
             }
 
-            if (votesDto.getElectionYear() == null) {
-                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Election Year Cannot be Empty");
-            }
 
             Optional<Candidates> candidatesOptional = candidatesRepository.findFirstByUuid(votesDto.getCandidateUuid());
             if (candidatesOptional.isEmpty()) {
@@ -217,9 +214,12 @@ public class VotesServiceImpl implements VotesService {
             votes.setCandidates(candidates);
             votes.setUserAccount(userAccount);
             votes.setElection(election);
-            votes.setYear(votesDto.getElectionYear());
 
             Votes savedVotes = votesRepository.save(votes);
+
+            // Update total votes for the candidate
+            candidates.setTotalVotes(candidates.getTotalVotes() + 1);
+            candidatesRepository.save(candidates);
 
             return new Response<>(false, ResponseCode.SUCCESS, savedVotes, "Vote Added successfully");
 

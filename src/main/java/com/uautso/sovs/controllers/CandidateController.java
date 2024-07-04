@@ -50,12 +50,12 @@ public class CandidateController {
 
     @GraphQLMutation(name = "deleteCandidate")
     public Response<Candidates> deleteCandidate(@GraphQLArgument(name = "uuid")String uuid){
-        return candidateService.deleteCandidate(uuid);
+        return candidateService.deleteCandidateByUuid(uuid);
     }
 
     @GraphQLMutation(name = "updateCandidate")
     public Response<Candidates> updateCandidate(@GraphQLArgument(name = "candidate") CandidateDto candidateDto) {
-        return candidateService.updateCandidate(candidateDto);
+        return candidateService.updateCandidateByUuid(candidateDto);
     }
 
 }

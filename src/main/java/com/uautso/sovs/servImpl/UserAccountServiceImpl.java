@@ -88,6 +88,9 @@ public class UserAccountServiceImpl implements UserAccountService {
             if (isFirstTime && accountDto.getLastName() == null)
                 return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Last Name Cannot be Empty");
 
+            if (isFirstTime && accountDto.getCourses() == null)
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Course Cannot be Empty");
+
             if (!accountDto.getFirstName().isBlank() && !Objects.equals(accountDto.getFirstName(), userAccount.getFirstName()))
                 userAccount.setFirstName(accountDto.getFirstName());
 
@@ -105,6 +108,11 @@ public class UserAccountServiceImpl implements UserAccountService {
 
             if (isFirstTime && userAccount.getPassword() == null) {
                 userAccount.setPassword(passwordEncoder.encode(accountDto.getLastName().toUpperCase()));
+            }
+
+            if (isFirstTime && userAccount.getCourses() == null) {
+                userAccount.setCourses(accountDto.getCourses());
+
             }
 
             UserAccount account = accountRepository.save(userAccount);

@@ -54,7 +54,8 @@ public class UserAccount extends BaseEntity implements Serializable {
 
     private String password;
 
-    @Column(name = "Course", unique = true)
+    @Column(name = "Course")
+    @Enumerated(EnumType.STRING)
     private Courses courses;
 
 

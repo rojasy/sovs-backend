@@ -11,6 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class VotesDto {
     private String candidateUuid;
-    private Integer electionYear;
     private String electionUuid;
 }
