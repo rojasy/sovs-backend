@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -170,6 +171,69 @@ public class VotesServiceImpl implements VotesService {
 //        return new Response<>(true, ResponseCode.FAIL, "Failed to add vote");
 //    }
 
+
+
+
+//    @Override
+//    public Response<Votes> addVote(VotesDto votesDto) {
+//        try {
+//            UserAccount user = loggedUser.getUser();
+//
+//            if (user == null) {
+//                logger.info("UNAUTHENTICATED USER TRYING TO CREATE VOTES, REJECTED");
+//                return new Response<>(true, ResponseCode.UNAUTHORIZED, "Unauthenticated!");
+//            }
+//
+//            Optional<UserAccount> userAccountOptional = accountRepository.findFirstByUuid(user.getUuid());
+//            if (userAccountOptional.isEmpty()) {
+//                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "No user found with specified uuid");
+//            }
+//            UserAccount userAccount = userAccountOptional.get();
+//
+//            if (votesDto.getCandidateUuid() == null) {
+//                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Candidate UUid Cannot be Empty");
+//            }
+//
+//
+//            Optional<Candidates> candidatesOptional = candidatesRepository.findFirstByUuid(votesDto.getCandidateUuid());
+//            if (candidatesOptional.isEmpty()) {
+//                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "No Candidate found with specified uuid");
+//            }
+//            Candidates candidates = candidatesOptional.get();
+//
+//            Optional<Election> electionOptional = electionRepository.findFirstByUuid(votesDto.getElectionUuid());
+//            if (electionOptional.isEmpty()) {
+//                return new Response<>(true, ResponseCode.NO_RECORD_FOUND, "No Election found with specified uuid");
+//            }
+//            Election election = electionOptional.get();
+//
+//            // Check if the user has already voted for the same candidate in the same election
+//            Optional<Votes> existingVotes = votesRepository.findByUserAccountUuidAndCandidatesUuidAndElectionUuid(
+//                    user.getUuid(), votesDto.getCandidateUuid(), votesDto.getElectionUuid());
+//            if (existingVotes.isPresent()) {
+//                return new Response<>(true, ResponseCode.FAIL, "User has already voted for this candidate in the specified election");
+//            }
+//
+//            Votes votes = new Votes();
+//            votes.setCandidates(candidates);
+//            votes.setUserAccount(userAccount);
+//            votes.setElection(election);
+//
+//            Votes savedVotes = votesRepository.save(votes);
+//
+//            // Update total votes for the candidate
+//            candidates.setTotalVotes(candidates.getTotalVotes() + 1);
+//            candidatesRepository.save(candidates);
+//
+//            return new Response<>(false, ResponseCode.SUCCESS, savedVotes, "Vote Added successfully");
+//
+//        } catch (Exception e) {
+//            logger.error("FAILED TO ADD VOTES", e);
+//            return new Response<>(true, ResponseCode.FAIL, "Failed to add vote");
+//        }
+//    }
+
+
     @Override
     public Response<Votes> addVote(VotesDto votesDto) {
         try {
@@ -187,9 +251,8 @@ public class VotesServiceImpl implements VotesService {
             UserAccount userAccount = userAccountOptional.get();
 
             if (votesDto.getCandidateUuid() == null) {
-                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Candidate UUid Cannot be Empty");
+                return new Response<>(true, ResponseCode.NULL_ARGUMENT, "Candidate UUID Cannot be Empty");
             }
-
 
             Optional<Candidates> candidatesOptional = candidatesRepository.findFirstByUuid(votesDto.getCandidateUuid());
             if (candidatesOptional.isEmpty()) {
@@ -203,11 +266,16 @@ public class VotesServiceImpl implements VotesService {
             }
             Election election = electionOptional.get();
 
-            // Check if the user has already voted for the same candidate in the same election
-            Optional<Votes> existingVotes = votesRepository.findByUserAccountUuidAndCandidatesUuidAndElectionUuid(
-                    user.getUuid(), votesDto.getCandidateUuid(), votesDto.getElectionUuid());
-            if (existingVotes.isPresent()) {
-                return new Response<>(true, ResponseCode.FAIL, "User has already voted for this candidate in the specified election");
+            // Check if the user is the same as the candidate they are trying to vote for
+            if (userAccount.getId().equals(candidates.getUserAccount().getId())) {
+                return new Response<>(true, ResponseCode.FAIL, "Candidates cannot vote for themselves");
+            }
+
+            // Check if the user has already voted in the same election
+            List<Votes> existingVotes = votesRepository.findByUserAccountUuidAndElectionUuid(
+                    userAccount.getUuid(), votesDto.getElectionUuid());
+            if (!existingVotes.isEmpty()) {
+                return new Response<>(true, ResponseCode.FAIL, "User has already voted in the specified election");
             }
 
             Votes votes = new Votes();
@@ -228,6 +296,9 @@ public class VotesServiceImpl implements VotesService {
             return new Response<>(true, ResponseCode.FAIL, "Failed to add vote");
         }
     }
+
+
+
 
     @Override
     public Response<Candidates> getTotalVotes(TotalVotesDto totalVotesDto) {

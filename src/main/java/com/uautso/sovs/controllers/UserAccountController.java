@@ -44,6 +44,11 @@ public class UserAccountController {
         return accountService.createUpdateUser(account);
     }
 
+    @GraphQLMutation(name = "changePassword")
+    public Response<UserAccount> changePassword(@GraphQLArgument(name = "oldpassword") String oldPassword, @GraphQLArgument(name = "newpassword") String newPassword) {
+        return accountService.changePassword(oldPassword, newPassword);
+    }
+
   //  @PreAuthorize("hasAnyRole('ROLE_DELETE_USER')")
     @GraphQLMutation(name = "deleteUser")
     public Response<UserAccount> deleteUser(@GraphQLArgument(name = "uuid")String uuid){
